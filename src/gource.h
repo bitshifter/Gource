@@ -21,11 +21,11 @@
 #define GOURCE_VERSION "0.12"
 
 #ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
 #include "windows.h"
 #endif
 
 #include <deque>
-#include <dirent.h>
 
 #include "core/display.h"
 #include "core/sdlapp.h"
@@ -96,7 +96,7 @@ class Gource : public SDLApp {
     bool draw_loading;
     bool paused;
 
-    long  currtime;
+    time_t  currtime;
     float subseconds;
 
     float splash;

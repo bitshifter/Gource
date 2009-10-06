@@ -15,6 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <ctime>
 #include "cvs-exp.h"
 
 Regex cvsexp_commitno_regex("^([0-9]{6}):");

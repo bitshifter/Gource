@@ -42,7 +42,7 @@ public:
 class RCommit {
     vec3f fileColour(std::string filename);
 public:
-    long timestamp;
+    time_t timestamp;
     std::string username;
 
     std::list<RCommitFile> files;
@@ -55,7 +55,7 @@ public:
 
     RCommit();
     void debug();
-    virtual bool parse(BaseLog* logf) {};
+    virtual bool parse(BaseLog* logf) { return false; }
 };
 
 class RCommitLog {

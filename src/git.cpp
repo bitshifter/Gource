@@ -15,6 +15,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef _MSC_VER
+#include <direct.h>
+#define getcwd _getcwd
+#define chdir _chdir
+#endif
+
 #include "git.h"
 
 // parse git log entries
@@ -67,7 +73,7 @@ BaseLog* GitCommitLog::generateLog(std::string dir) {
     char logfile_buff[1024];
 
 #ifdef _WIN32
-    DWORD tmplen = GetTempPath(0, "");
+    DWORD tmplen = GetTempPath(0, L"");
 
     if(tmplen == 0) return 0;
 

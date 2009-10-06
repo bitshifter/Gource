@@ -38,8 +38,8 @@
 
 class BaseLog {
 public:
-    virtual bool getNextLine(std::string& line) {};
-    virtual bool isFinished() {};
+    virtual bool getNextLine(std::string& line) = 0;
+    virtual bool isFinished() = 0;
 };
 
 class StreamLog : public BaseLog {

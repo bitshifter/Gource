@@ -503,7 +503,7 @@ float RDirNode::distanceTo(RDirNode* node) {
     float posd        = (node->getPos() - pos).length();
     float myradius    = getRadius();
 
-    float your_radius = std::max(1.0, sqrt((node->visibleFileCount() * file_area)) * gGourceDirPadding);
+    float your_radius = std::max(1.0f, sqrt((static_cast<float>(node->visibleFileCount()) * file_area)) * gGourceDirPadding);
 
     float sumradius = myradius + your_radius;
 

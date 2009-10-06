@@ -101,8 +101,14 @@ std::string SDLAppDisplay::getPath() {
 }
 
 bool SDLAppDisplay::dirExists(std::string path) {
+#ifdef _WIN32
+	WCHAR szAppPath[MAX_PATH];
+	DWORD attributes = GetFileAttributes(szAppPath);
+	return ( attributes != INVALID_FILE_ATTRIBUTES && ( attributes & FILE_ATTRIBUTE_DIRECTORY ) );
+#else
     struct stat st;
     return !stat(path.c_str(), &st) && S_ISDIR(st.st_mode);
+#endif
 }
 
 void SDLAppDisplay::detectPath() {
@@ -111,7 +117,7 @@ void SDLAppDisplay::detectPath() {
     std::string fonts_dir    = "data/fonts/";
 #ifdef _WIN32
     char szAppPath[MAX_PATH];
-    GetModuleFileName(0, szAppPath, MAX_PATH);
+    GetModuleFileNameA(0, szAppPath, MAX_PATH);
 
     // Extract directory
     std::string exepath = std::string(szAppPath);

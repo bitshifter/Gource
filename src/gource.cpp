@@ -15,6 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <ctime>
 #include "gource.h"
 
 float gGourceAutoSkipSeconds = 3.0;
@@ -48,12 +49,12 @@ void createWindowsConsole() {
     char consoleTitle[512];
     sprintf(consoleTitle, "%s", "Gource Console");
 
-    while(FindWindow(0, consoleTitle)) {
+    while(FindWindowA(0, consoleTitle)) {
         sprintf(consoleTitle, "Gource Console %d", ++console_suffix);
     }
 
     AllocConsole();
-    SetConsoleTitle(consoleTitle);
+    SetConsoleTitleA(consoleTitle);
 
     //redirect streams to console
     freopen("conin$", "r", stdin);
@@ -64,7 +65,7 @@ void createWindowsConsole() {
 
     //wait for our console window
     while(consoleWindow==0) {
-        consoleWindow = FindWindow(0, consoleTitle);
+        consoleWindow = FindWindowA(0, consoleTitle);
         SDL_Delay(100);
     }
 
@@ -607,17 +608,17 @@ void Gource::keyPress(SDL_KeyboardEvent *e) {
 
         if (e->keysym.sym == SDLK_EQUALS) {
             if(gGourceDaysPerSecond>=1.0) {
-                gGourceDaysPerSecond = std::min(30.0f, floorf(gGourceDaysPerSecond) + 1.0f);
+                gGourceDaysPerSecond = std::min<float>(30.0f, floorf(gGourceDaysPerSecond) + 1.0f);
             } else {
-                gGourceDaysPerSecond = std::min(1.0f, gGourceDaysPerSecond * 2.0f);
+                gGourceDaysPerSecond = std::min<float>(1.0f, gGourceDaysPerSecond * 2.0f);
             }
         }
 
         if (e->keysym.sym == SDLK_MINUS) {
             if(gGourceDaysPerSecond>1.0) {
-                gGourceDaysPerSecond = std::max(0.0f, floorf(gGourceDaysPerSecond) - 1.0f);
+                gGourceDaysPerSecond = std::max<float>(0.0f, floorf(gGourceDaysPerSecond) - 1.0f);
             } else {
-                gGourceDaysPerSecond = std::max(0.0f, gGourceDaysPerSecond * 0.5f);
+                gGourceDaysPerSecond = std::max<float>(0.0f, gGourceDaysPerSecond * 0.5f);
             }
         }
 
@@ -643,6 +644,59 @@ void Gource::keyPress(SDL_KeyboardEvent *e) {
 void Gource::findUserImages() {
     if(!gGourceUserImageDir.size()) return;
 
+#ifdef _WIN32
+	HANDLE          hList;
+	char            szDir[MAX_PATH+1];
+	WIN32_FIND_DATAA FileData;
+
+	// Get the proper directory path
+	sprintf(szDir, "%s\\*", gGourceUserImageDir.c_str());
+
+	// Get the first file
+	hList = FindFirstFileA(szDir, &FileData);
+	if (hList == INVALID_HANDLE_VALUE)
+	{ 
+		debugLog("No files found\n\n");
+		return;
+	}
+	else
+	{
+		// Traverse through the directory structure
+		for (;;)
+		{
+			// Check the object is a directory or not
+			if ((FileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
+			{
+				std::string dirfile(FileData.cFileName);
+
+				size_t extpos = 0;
+
+				if ((extpos=dirfile.rfind(".jpg"))  != std::string::npos ||
+					(extpos=dirfile.rfind(".jpeg")) != std::string::npos ||
+					(extpos=dirfile.rfind(".png"))  != std::string::npos)
+				{
+					std::string image_path = gGourceUserImageDir + dirfile;
+					std::string name       = dirfile.substr(0,extpos);
+
+					debugLog("%s => %s\n", name.c_str(), image_path.c_str());
+
+					gGourceUserImageMap[name] = image_path;
+				}
+			}
+
+			// get the next file
+			if (!FindNextFileA(hList, &FileData))
+			{
+				if (GetLastError() == ERROR_NO_MORE_FILES)
+				{
+					break;
+				}
+			}
+		}
+	}
+
+	FindClose(hList);
+#else
     //get jpg and png images in dir
     DIR *dp;
     struct dirent *dirp;
@@ -668,6 +722,7 @@ void Gource::findUserImages() {
     }
 
     closedir(dp);
+#endif
 }
 
 void Gource::reset() {
@@ -1115,7 +1170,7 @@ void Gource::updateTime() {
 }
 
 void Gource::logic(float t, float dt) {
-    dt = std::min(dt, gGourceMaxDelta);
+    dt = std::min<float>(dt, gGourceMaxDelta);
 
     if(draw_loading) return;
 
@@ -1350,7 +1405,7 @@ void Gource::loadingScreen() {
 }
 
 void Gource::draw(float t, float dt) {
-    dt = std::min(dt, gGourceMaxDelta);
+    dt = std::min<float>(dt, gGourceMaxDelta);
 
     display.setClearColour(background_colour);
     display.clear();

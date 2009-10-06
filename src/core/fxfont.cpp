@@ -27,6 +27,10 @@
 
 #include "fxfont.h"
 
+#ifdef  _MSC_VER
+static inline float roundf(float x) { return floor(x + 0.5f); }
+#endif
+
 FXFontManager fontmanager;
 
 FXFont::FXFont() {
