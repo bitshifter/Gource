@@ -10,3 +10,15 @@ logs/*
 /config.status
 *.swp
 *.d
+*.ncb
+*.suo
+*.obj
+*.ilk
+*.exp
+*.res
+*.manifest
+*.dep
+*.idb
+*.pdb
+*.user
+BuildLog.htm
