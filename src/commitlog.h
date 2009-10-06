@@ -50,8 +50,8 @@ public:
     bool isValid();
 
     void addBranch(std::string branch);
-    void addFile(std::string& filename, std::string& action);
-    void addFile(std::string& filename, std::string& action, vec3f colour);
+    void addFile(const std::string& filename, const std::string& action);
+    void addFile(const std::string& filename, const std::string& action, vec3f colour);
 
     RCommit();
     void debug();
