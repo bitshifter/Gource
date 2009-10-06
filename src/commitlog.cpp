@@ -221,11 +221,11 @@ vec3f RCommit::fileColour(std::string filename) {
     }
 }
 
-void RCommit::addFile(std::string& filename, std::string& action) {
+void RCommit::addFile(const std::string& filename, const std::string& action) {
     files.push_back(RCommitFile(filename, action, fileColour(filename)));
 }
 
-void RCommit::addFile(std::string& filename, std::string& action, vec3f colour) {
+void RCommit::addFile(const std::string& filename, const std::string& action, vec3f colour) {
     files.push_back(RCommitFile(filename, action, colour));
 }
 
