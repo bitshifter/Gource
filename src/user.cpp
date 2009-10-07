@@ -17,13 +17,13 @@
 
 #include "user.h"
 
-float gGourceBeamDist = 100.0;
-float gGourceActionDist = 50.0;
-float gGourceMaxUserIdle = 3.0;
-float gGourcePersonalSpaceDist = 100.0;
-float gGourceMaxFileLagSeconds = 5.0;
-float gGourceMaxUserSpeed      = 500.0;
-float gGourceUserFriction      = 1.0;
+float gGourceBeamDist = 100.0f;
+float gGourceActionDist = 50.0f;
+float gGourceMaxUserIdle = 3.0f;
+float gGourcePersonalSpaceDist = 100.0f;
+float gGourceMaxFileLagSeconds = 5.0f;
+float gGourceMaxUserSpeed      = 500.0f;
+float gGourceUserFriction      = 1.0f;
 
 bool gGourceColourUserImages = false;
 
@@ -32,7 +32,7 @@ std::string gGourceUserImageDir;
 std::string gGourceDefaultUserImage;
 
 //fractions of days per second
-float gGourceDaysPerSecond = 0.1;
+float gGourceDaysPerSecond = 0.1f;
 
 bool gGourceHideUsers = false;
 
@@ -41,7 +41,7 @@ RUser::RUser(std::string name, vec2f pos, int tagid) : Pawn(name,pos,tagid) {
     this->name = name;
 
     speed = gGourceMaxUserSpeed;
-    size = 20.0;
+    size = 20.0f;
 
     shadow = true;
 
@@ -51,11 +51,11 @@ RUser::RUser(std::string name, vec2f pos, int tagid) : Pawn(name,pos,tagid) {
 
     setSelected(false);
 
-    last_action = 0.0;
-    action_interval = 0.2;
-    name_interval = 5.0;
+    last_action = 0.0f;
+    action_interval = 0.2f;
+    name_interval = 5.0f;
 
-    min_units_ps = 100.0;
+    min_units_ps = 100.0f;
 }
 
 void RUser::addAction(RAction* action) {
@@ -104,12 +104,12 @@ void RUser::applyForceUser(RUser* u) {
     //different repelling force depending on how busy the user is
     float desired_dist = getActionCount() == 0 ?
         gGourcePersonalSpaceDist : (actions.size()>0 && activeActions.size()==0) ?
-            gGourcePersonalSpaceDist * 0.1 : gGourcePersonalSpaceDist * 0.5;
+            gGourcePersonalSpaceDist * 0.1f : gGourcePersonalSpaceDist * 0.5f;
 
     //resolve overlap
-    if(dist < 0.001) {
+    if(dist < 0.001f) {
 
-        accel += 1.0f * vec2f( (rand() % 100) - 50, (rand() % 100) - 50).normal();
+        accel += 1.0f * vec2f( static_cast<float>((rand() % 100) - 50), static_cast<float>((rand() % 100) - 50)).normal();
 
         return;
     }
@@ -130,8 +130,8 @@ void RUser::applyForceAction(RAction* action) {
     float desired_dist = gGourceActionDist;
 
     //resolve overlap
-    if(dist < 0.001) {
-        accel += vec2f( (rand() % 100) - 50, (rand() % 100) - 50).normal();
+    if(dist < 0.001f) {
+        accel += vec2f( static_cast<float>((rand() % 100) - 50), static_cast<float>((rand() % 100) - 50)).normal();
         return;
     }
 
@@ -180,8 +180,6 @@ void RUser::applyForceToActions() {
 }
 
 void RUser::assignIcon() {
-    struct stat fileinfo;
-
     usercol = colourHash(name);
 
     bool image_assigned = false;
@@ -213,23 +211,23 @@ void RUser::assignIcon() {
     //nope
     if(!image_assigned) {
         if(gGourceDefaultUserImage.size() > 0) {
-            if(!gGourceColourUserImages) usercol = vec3f(1.0, 1.0, 1.0);
+            if(!gGourceColourUserImages) usercol = vec3f(1.0f, 1.0f, 1.0f);
             icon = texturemanager.grab(gGourceDefaultUserImage, 1, 1, 0, true);
         } else {
             icon = texturemanager.grab("no_photo.png");
         }
     }
 
-    usercol = usercol * 0.6 + vec3f(1.0, 1.0, 1.0) * 0.4;
-    usercol *= 0.9;
+    usercol = usercol * 0.6f + vec3f(1.0f, 1.0f, 1.0f) * 0.4f;
+    usercol *= 0.9f;
 }
 
 int RUser::getActionCount() {
-    return actions.size() + activeActions.size();
+    return static_cast<int>(actions.size() + activeActions.size());
 }
 
 int RUser::getPendingActionCount() {
-    return actions.size();
+    return static_cast<int>(actions.size());
 }
 
 void RUser::logic(float t, float dt) {
@@ -270,10 +268,10 @@ void RUser::logic(float t, float dt) {
     }
 
     //reset action interval
-    if(action_interval <= 0) {
-        int total_actions = actions.size() + activeActions.size();
+    if(action_interval <= 0.0f) {
+        float total_actions = static_cast<float>(actions.size() + activeActions.size());
 
-        action_interval = total_actions ? (1.0 / (float)total_actions) : 1.0;
+        action_interval = total_actions ? (1.0f / total_actions) : 1.0f;
     }
 
     //update actions
@@ -333,11 +331,11 @@ void RUser::setSelected(bool selected) {
 }
 
 vec3f RUser::getNameColour() {
-    return (selected||highlighted) ? vec3f(1.0, 1.0, 0.3) : namecol;
+    return (selected||highlighted) ? vec3f(1.0f, 1.0f, 0.3f) : namecol;
 }
 
 vec3f RUser::getColour() {
-    if(selected) return vec3f(1.0, 1.0, 1.0);
+    if(selected) return vec3f(1.0f, 1.0f, 1.0f);
 
     return usercol;
 }
@@ -351,7 +349,7 @@ float RUser::getAlpha() {
     float alpha = Pawn::getAlpha();
     //user fades out if not doing anything
     if(elapsed - last_action > gGourceMaxUserIdle) {
-        alpha = 1.0 - std::min(elapsed - last_action - gGourceMaxUserIdle, 1.0f);
+        alpha = 1.0f - std::min(elapsed - last_action - gGourceMaxUserIdle, 1.0f);
     }
 
     return alpha;
@@ -378,18 +376,18 @@ void RUser::drawNameText(float alpha) {
 
     float user_alpha = getAlpha();
 
-    if(highlighted || selected || alpha>0.0) {
+    if(highlighted || selected || alpha>0.0f) {
         vec3f nameCol = getNameColour();
 
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
 
-        vec3f drawpos = vec3f(pos.x, pos.y, 0.0);
+        vec3f drawpos = vec3f(pos.x, pos.y, 0.0f);
 
         vec3f screenpos = display.project(drawpos);
 
-        screenpos.x -= namewidth * 0.5;
-        screenpos.y -= size * 2.0;
+        screenpos.x -= namewidth * 0.5f;
+        screenpos.y -= size * 2.0f;
 
         glColor4f(nameCol.x, nameCol.y, nameCol.z, (selected||highlighted) ? user_alpha : alpha);
 

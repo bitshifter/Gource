@@ -116,7 +116,7 @@ void Pawn::drawNameText(float alpha) {
         glColor4f(nameCol.x, nameCol.y, nameCol.z, alpha);
 
         float namewidth = font.getWidth(name);
-        font.draw(pos.x - ((float)namewidth/2.0), pos.y - size*1.2, name.c_str()); // above player
+        font.draw(pos.x - ((float)namewidth/2.0f), pos.y - size*1.2f, name.c_str()); // above player
     }
 }
 

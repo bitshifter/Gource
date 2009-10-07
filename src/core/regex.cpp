@@ -65,7 +65,7 @@ bool Regex::match(std::string& str, std::vector<std::string>* results) {
         re,
         0,
         str.c_str(),
-        str.size(),
+        static_cast<int>(str.size()),
         0,
         0,
         ovector,

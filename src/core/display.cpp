@@ -122,7 +122,7 @@ void SDLAppDisplay::detectPath() {
     // Extract directory
     std::string exepath = std::string(szAppPath);
 
-    int pos = exepath.rfind("\\");
+    size_t pos = exepath.rfind("\\");
 
     path = exepath.substr(0, pos+1);
     resource_dir = path + std::string("\\data\\");

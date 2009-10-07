@@ -25,19 +25,22 @@ PositionSlider::PositionSlider(float percent) {
     font = fontmanager.grab("FreeSans.ttf", 16);
     font.dropShadow(true);
 
-    int gap = display.width / 30;
+	float widthf = static_cast<float>(display.width);
+	float heightf = static_cast<float>(display.height);
 
-    bounds.update(vec2f(gap, display.height - gap*2));
-    bounds.update(vec2f(display.width - gap, display.height - gap));
+    float gap = widthf / 30.0f;
 
-    slidercol = vec3f(1.0, 1.0, 1.0);
+    bounds.update(vec2f(gap, heightf - gap*2.0f));
+    bounds.update(vec2f(widthf - gap, heightf - gap));
 
-    mouseover = -1.0;
-    mouseover_elapsed = 0;
+    slidercol = vec3f(1.0f, 1.0f, 1.0f);
 
-    fade_time = 1.0;
+    mouseover = -1.0f;
+    mouseover_elapsed = 0.0f;
 
-    alpha = 1.0;
+    fade_time = 1.0f;
+
+    alpha = 1.0f;
 }
 
 void PositionSlider::setColour(vec3f col) {
@@ -122,10 +125,10 @@ void PositionSlider::draw(float dt) {
     glEnable(GL_BLEND);
     glEnable(GL_TEXTURE_2D);
 
-    glColor4f(1.0, 1.0, 1.0, 1.0);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-    if(caption.size() && mouseover >= 0.0) {
-        font.draw(std::min((double)display.width - capwidth - 1.0, std::max(1.0, mouseover - (capwidth/2.0))), bounds.min.y - 25.0, caption);
+    if(caption.size() && mouseover >= 0.0f) {
+        font.draw(std::min((float)display.width - capwidth - 1.0f, std::max(1.0f, mouseover - (capwidth/2.0f))), bounds.min.y - 25.0f, caption);
     }
 
 }

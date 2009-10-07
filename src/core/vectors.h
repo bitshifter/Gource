@@ -98,7 +98,7 @@ public:
         T len = length();
         if(len == 0) return;
 
-        *this *= (1.0/len);
+        *this *= (T(1)/len);
     }
 
     vec2<T> normal() const {
@@ -208,7 +208,7 @@ public:
         T len = length();
         if(len == 0) return;
 
-        *this *= (1.0/len);
+        *this *= (T(1)/len);
     }
 
     vec3<T> normal() const {

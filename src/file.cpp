@@ -27,21 +27,21 @@ RFile::RFile(std::string name, vec3f colour, vec2f pos, int tagid) : Pawn(name,p
     hidden = true;
     icon = texturemanager.grab("file.png");
     size = gGourceFileDiameter;
-    radius = size * 0.5;
+    radius = size * 0.5f;
 
-    speed = 5.0;
-    nametime = 4.0;
+    speed = 5.0f;
+    nametime = 4.0f;
     name_interval = nametime;
 
-    namecol     = vec3f(1.0, 1.0, 1.0);
+    namecol     = vec3f(1.0f, 1.0f, 1.0f);
     file_colour = colour;
 
-    last_action = 0.0;
+    last_action = 0.0f;
     removing=false;
 
     shadow = true;
 
-    distance = 0;
+    distance = 0.0f;
 
     this->fullpath = name;
     this->name = name;
@@ -124,7 +124,7 @@ void RFile::setSelected(bool selected) {
 }
 
 vec3f RFile::getNameColour() {
-    return selected ? vec3f(1.0, 1.0, 0.3) : namecol;
+    return selected ? vec3f(1.0f, 1.0f, 0.3f) : namecol;
 }
 
 vec3f RFile::getFileColour() {
@@ -132,12 +132,12 @@ vec3f RFile::getFileColour() {
 }
 
 vec3f RFile::getColour() {
-    if(selected) return vec3f(1.0, 1.0, 1.0);
+    if(selected) return vec3f(1.0f, 1.0f, 1.0f);
 
     float lc = elapsed - last_action;
 
-    if(lc<1.0) {
-        return touch_colour * (1.0-lc) + file_colour * lc;
+    if(lc<1.0f) {
+        return touch_colour * (1.0f-lc) + file_colour * lc;
     }
 
     return file_colour;
@@ -148,7 +148,7 @@ float RFile::getAlpha() {
 
     //user fades out if not doing anything
     if(elapsed - last_action > gGourceMaxFileIdle) {
-        alpha = 1.0 - std::min(elapsed - last_action - gGourceMaxFileIdle, 1.0f);
+        alpha = 1.0f - std::min(elapsed - last_action - gGourceMaxFileIdle, 1.0f);
     }
 
     return alpha;
@@ -172,7 +172,7 @@ void RFile::logic(float dt) {
         dest_pos = dirnorm + dest;
     }*/
 
-    float dradius = dir->getRadius();
+    //float dradius = dir->getRadius();
 
     dest_pos = dest_pos * distance;
 
@@ -241,18 +241,18 @@ void RFile::drawNameText(float alpha) {
 
     vec3f nameCol = getNameColour();
 
-    if(gGourceHideFilenames) alpha = 0.0;
+    if(gGourceHideFilenames) alpha = 0.0f;
 
-    if(selected || alpha > 0.01) {
+    if(selected || alpha > 0.01f) {
 
-        float name_alpha = selected ? 1.0 : alpha;
+        float name_alpha = selected ? 1.0f : alpha;
 
-        vec3f drawpos = vec3f(pos.x, pos.y, 0.0);
+        vec3f drawpos = vec3f(pos.x, pos.y, 0.0f);
 
         vec3f screenpos = display.project(drawpos);
 
-        screenpos.x += 10.0;
-        screenpos.y -= 10.0;
+        screenpos.x += 10.0f;
+        screenpos.y -= 10.0f;
 
         glMatrixMode(GL_PROJECTION);
             glPushMatrix();
@@ -263,12 +263,12 @@ void RFile::drawNameText(float alpha) {
              glPushMatrix();
                 glLoadIdentity();
 
-            glTranslatef(screenpos.x, screenpos.y, 0.0);
+            glTranslatef(screenpos.x, screenpos.y, 0.0f);
 
             //hard coded drop shadow
             glPushMatrix();
-                glTranslatef(1.0, 1.0, 0.0);
-                glColor4f(0.0, 0.0, 0.0, name_alpha * 0.7f);
+                glTranslatef(1.0f, 1.0f, 0.0f);
+                glColor4f(0.0f, 0.0f, 0.0f, name_alpha * 0.7f);
                 glCallList(namelist);
             glPopMatrix();
 

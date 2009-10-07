@@ -123,7 +123,7 @@ void gource_help(std::string error) {
     if(consoleWindow !=0) {
         RECT windowRect;
         if(GetWindowRect(consoleWindow, &windowRect)) {
-            float width = windowRect.right - windowRect.left;
+            int width = windowRect.right - windowRect.left;
             MoveWindow(consoleWindow,windowRect.left,windowRect.top,width,700,true);
         }
     }
@@ -399,18 +399,18 @@ void Gource::zoom(bool zoomin) {
 //    if(selectedFile == 0 && selectedUser == 0) return;
 
     float min_distance = camera.getMinDistance();
-    float max_distance = camera.getMaxDistance();
+    //float max_distance = camera.getMaxDistance();
 
-    float zoom_multi = 1.1;
+    float zoom_multi = 1.1f;
 
     if(zoomin) {
         min_distance /= zoom_multi;
-        if(min_distance < 100.0) min_distance = 100.0;
+        if(min_distance < 100.0f) min_distance = 100.0f;
 
         camera.setMinDistance(min_distance);
     } else {
         min_distance *= zoom_multi;
-        if(min_distance > 1000.0) min_distance = 1000.0;
+        if(min_distance > 1000.0f) min_distance = 1000.0f;
 
         camera.setMinDistance(min_distance);
     }
@@ -650,11 +650,11 @@ void Gource::keyPress(SDL_KeyboardEvent *e) {
         }
 
         if(e->keysym.sym == SDLK_LEFTBRACKET) {
-            gGourceForceGravity /= 1.1;
+            gGourceForceGravity /= 1.1f;
         }
 
         if(e->keysym.sym == SDLK_RIGHTBRACKET) {
-            gGourceForceGravity *= 1.1;
+            gGourceForceGravity *= 1.1f;
         }
 
     }
@@ -940,7 +940,7 @@ void Gource::processCommit(RCommit& commit, float t) {
 
             //if we already have max files in circulation
             //we cant add any more
-            if(files.size() >= gGourceMaxFiles) continue;
+            if(static_cast<int>(files.size()) >= gGourceMaxFiles) continue;
 
             int tagid = tag_seq++;
 
@@ -1120,10 +1120,10 @@ void Gource::updateUsers(float t, float dt) {
     }
 
     //nothing is moving so increment idle
-    if(idle_users==users.size()) {
+    if(idle_users==static_cast<int>(users.size())) {
         idle_time += dt;
     } else {
-        idle_time = 0;
+        idle_time = 0.0f;
     }
 
     // delete inactive users
@@ -1178,14 +1178,13 @@ void Gource::updateDirs(float dt) {
 void Gource::updateTime() {
     //display date
     char datestr[256];
-    char timestr[256];
     struct tm* timeinfo = localtime ( &currtime );
     strftime(datestr, 256, "%A, %d %B, %Y %X", timeinfo);
     displaydate = datestr;
 
     //avoid wobbling by only moving font if change is sufficient
-    int date_offset = (int) fontmedium.getWidth(displaydate) * 0.5;
-    if(abs(date_x_offset - date_offset) > 5) date_x_offset = date_offset;
+    float date_offset = fontmedium.getWidth(displaydate) * 0.5f;
+    if(fabsf(date_x_offset - date_offset) > 5.0f) date_x_offset = date_offset;
 }
 
 void Gource::logic(float t, float dt) {
@@ -1238,7 +1237,7 @@ void Gource::logic(float t, float dt) {
     }
 
     //set current time
-    float time_inc = (dt * 86400.0 * gGourceDaysPerSecond);
+    float time_inc = (dt * 86400.0f * gGourceDaysPerSecond);
     int seconds    = (int) time_inc;
 
     subseconds += time_inc - ((float) seconds);
@@ -1415,12 +1414,12 @@ void Gource::loadingScreen() {
     glEnable(GL_BLEND);
     glEnable(GL_TEXTURE_2D);
 
-    glColor4f(1.0, 1.0, 1.0, 1.0);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
     std::string loading_message("Reading Log...");
-    int width = font.getWidth(loading_message);
+    float width = font.getWidth(loading_message);
 
-    font.print(display.width/2 - width/2, display.height/2 - 10, "%s", loading_message.c_str());
+    font.print(static_cast<float>(display.width/2) - width/2.0f, static_cast<float>(display.height/2 - 10), "%s", loading_message.c_str());
 }
 
 void Gource::draw(float t, float dt) {
@@ -1580,33 +1579,38 @@ void Gource::draw(float t, float dt) {
 
     vec3f campos = camera.getPos();
 
+	float width = static_cast<float>(display.width);
+	float height = static_cast<float>(display.height);
+	float half_width = width/2.0f;
+	float half_height = height/2.0f;
+
     if(!gGourceHideDate) {
-        fontmedium.draw(display.width/2 - date_x_offset, 20, displaydate);
+        fontmedium.draw(half_width - date_x_offset, 20.0f, displaydate);
     }
 
     if(splash>0.0f) {
-        int logowidth = fontlarge.getWidth("Gource");
-        int logoheight = 100;
-        int cwidth    = font.getWidth("Software Version Control Visualization");
-        int awidth    = font.getWidth("(C) 2009 Andrew Caudwell");
+        float logowidth = fontlarge.getWidth("Gource");
+        float logoheight = 100.0f;
+        float cwidth    = font.getWidth("Software Version Control Visualization");
+        float awidth    = font.getWidth("(C) 2009 Andrew Caudwell");
 
-        vec2f corner(display.width/2 - logowidth/2 - 30.0f, display.height/2 - 40);
+        vec2f corner(half_width - logowidth/2.0f - 30.0f, half_height - 40.0f);
 
         glDisable(GL_TEXTURE_2D);
         glColor4f(0.0f, 0.5f, 1.0f, splash * 0.015f);
         glBegin(GL_QUADS);
             glVertex2f(0.0f,                 corner.y);
             glVertex2f(0.0f,                 corner.y + logoheight);
-            glVertex2f(display.width, corner.y + logoheight);
-            glVertex2f(display.width, corner.y);
+            glVertex2f(width, corner.y + logoheight);
+            glVertex2f(width, corner.y);
         glEnd();
 
         glEnable(GL_TEXTURE_2D);
 
-        glColor4f(1.0,1.0,1.0,1.0);
-        fontlarge.draw(display.width/2 - logowidth/2,display.height/2 - 30, "Gource");
-        font.draw(display.width/2 - cwidth/2,display.height/2 + 10, "Software Version Control Visualization");
-        font.draw(display.width/2 - awidth/2,display.height/2 + 30, "(C) 2009 Andrew Caudwell");
+        glColor4f(1.0f,1.0f,1.0f,1.0f);
+        fontlarge.draw(half_width - logowidth/2.0f,half_height - 30.0f, "Gource");
+        font.draw(half_width - cwidth/2.0f,half_height + 10.0f, "Software Version Control Visualization");
+        font.draw(half_width - awidth/2.0f,half_height + 30.0f, "(C) 2009 Andrew Caudwell");
     }
 
     if(debug) {
@@ -1633,7 +1637,7 @@ void Gource::draw(float t, float dt) {
         }
 
         if(selectedFile != 0) {
-            font.print(0,360,"%s: %d files (%d visible)", selectedFile->getDir()->getPath().c_str(),
+            font.print(0.0f,360.0f,"%s: %d files (%d visible)", selectedFile->getDir()->getPath().c_str(),
                     selectedFile->getDir()->fileCount(), selectedFile->getDir()->visibleFileCount());
         }
 

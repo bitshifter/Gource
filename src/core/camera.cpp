@@ -187,9 +187,9 @@ void CameraMoveEvent::logic(float dt, Camera* cam) {
 
     float pc = elapsed/duration;
 
-    float f = old_fov * (1.0 - pc) + fov * pc;
-    vec3f p = old_pos * (1.0 - pc) + pos * pc;
-    vec3f t = old_target * (1.0 - pc) + target * pc;
+    float f = old_fov * (1.0f - pc) + fov * pc;
+    vec3f p = old_pos * (1.0f - pc) + pos * pc;
+    vec3f t = old_target * (1.0f - pc) + target * pc;
 
     cam->setFov(f);
     cam->setPos(p);
@@ -236,11 +236,11 @@ void CameraPath::logic(float dt) {
 
     if(current == 0) {
         if(loop) {
-            current_index = (current_index + 1) % events.size();
+            current_index = (current_index + 1) % static_cast<int>(events.size());
         } else {
             current_index++;
 
-            if(current_index >= events.size()) {
+            if(current_index >= static_cast<int>(events.size())) {
                 finished=true;
                 return;
             }

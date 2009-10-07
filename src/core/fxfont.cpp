@@ -44,8 +44,8 @@ FXFont::FXFont(FTFont* ft) {
 
 void FXFont::init() {
     shadow          = false;
-    shadow_strength = 0.7;
-    shadow_offset   = vec2f(1.0, 1.0);
+    shadow_strength = 0.7f;
+    shadow_offset   = vec2f(1.0f, 1.0f);
 
     round           = false;
     align_right     = false;
@@ -91,7 +91,7 @@ float FXFont::getHeight() {
 float FXFont::getWidth(std::string text) {
     FTBBox bb = ft->BBox(text.c_str());
 
-    float width = (bb.Upper().X() - bb.Lower().X());
+    float width = static_cast<float>(bb.Upper().X() - bb.Lower().X());
 
     return width;
 }

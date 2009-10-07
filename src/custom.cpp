@@ -29,7 +29,7 @@ vec3f CustomLog::parseColour(std::string cstr) {
 
     if(sscanf(cstr.c_str(), "%02x%02x%02x", &r, &g, &b) == 3) {
 
-        colour = vec3f( r, g, b );
+        colour = vec3f( static_cast<float>(r), static_cast<float>(g), static_cast<float>(b) );
         colour /= 255.0f;
 
         debugLog("colour %.2f %.2f %.2f\n", colour.x,colour.y,colour.z);

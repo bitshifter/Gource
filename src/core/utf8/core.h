@@ -269,7 +269,7 @@ namespace internal
         if (err == UTF8_OK) {
             // Decoding succeeded. Now, security checks...
             if (is_code_point_valid(cp)) {
-                if (!is_overlong_sequence(cp, length)){
+                if (!is_overlong_sequence(cp, static_cast<int>(length))){
                     // Passed! Return here.
                     if (code_point)
                         *code_point = cp;

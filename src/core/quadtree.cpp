@@ -36,7 +36,7 @@
 
 
 bool QuadNode::allowMoreItems() {
-    return (children.size() == 0 && (depth >= tree->max_node_depth || items.size() < tree->max_node_items ) );
+    return (children.size() == 0 && (depth >= tree->max_node_depth || static_cast<int>(items.size()) < tree->max_node_items ) );
 }
 
 
@@ -253,7 +253,7 @@ QuadNode::~QuadNode() {
         }
     }
 
-    tree->item_count -= items.size();
+    tree->item_count -= static_cast<int>(items.size());
 
     items.clear();
 

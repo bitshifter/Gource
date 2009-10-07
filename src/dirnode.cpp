@@ -49,7 +49,7 @@ RDirNode::RDirNode(RDirNode* parent, std::string abspath) {
         vec2f parentPos = parent->getPos();
         vec2f offset;
 
-        RDirNode* parentP = parent->getParent();
+        //RDirNode* parentP = parent->getParent();
 
         pos = parentPos;
     } else {
@@ -60,7 +60,7 @@ RDirNode::RDirNode(RDirNode* parent, std::string abspath) {
         beamtex = texturemanager.grab("beam.png");
     }
 
-    float padded_file_radius  = gGourceFileDiameter * 0.5;
+    float padded_file_radius  = gGourceFileDiameter * 0.5f;
 
     file_area  = padded_file_radius * padded_file_radius * PI;
 
@@ -133,7 +133,7 @@ bool RDirNode::prefixedBy(std::string path) {
         path = path + std::string("/");
     }
 
-    int pos = abspath.find(path);
+    size_t pos = abspath.find(path);
 
     if(pos==0) return true;
 
@@ -157,9 +157,9 @@ int RDirNode::getDepth() {
 void RDirNode::adjustPath() {
 
     //update display path
-    int parent_token_offset = 0;
+    size_t parent_token_offset = 0;
 
-    path_token_offset = abspath.size();
+    path_token_offset = static_cast<int>(abspath.size());
 
     if(parent != 0) {
         parent_token_offset  = parent->getTokenOffset();
@@ -167,7 +167,7 @@ void RDirNode::adjustPath() {
         //debugLog("abspath.substr arguments: %d %d %s size = %d\n", parent_token_offset, abspath.size()-parent_token_offset-1, abspath.c_str(), abspath.size());
 
         path_token        = abspath.substr(parent_token_offset, abspath.size()-parent_token_offset-1);
-        path_token_offset = abspath.size();
+        path_token_offset = static_cast<int>(abspath.size());
 
         //debugLog("new token %s\n", path_token.c_str());
     }
@@ -182,7 +182,7 @@ void RDirNode::setParent(RDirNode* parent) {
 
     //set depth
     if(parent == 0) {
-        depth = 1.0;
+        depth = 1;
     } else {
         depth = parent->getDepth() + 1;
     }
@@ -291,14 +291,14 @@ int RDirNode::visibleFileCount() {
 }
 
 int RDirNode::fileCount() {
-    return files.size();
+    return static_cast<int>(files.size());
 }
 
 std::string RDirNode::commonPathPrefix(std::string& str) {
     int c = 0;
     int slash = -1;
 
-    while(c<abspath.size() && c<str.size() && abspath[c] == str[c]) {
+    while(c<static_cast<int>(abspath.size()) && c<static_cast<int>(str.size()) && abspath[c] == str[c]) {
         if(abspath[c] == '/') {
             slash = c;
         }
@@ -470,7 +470,7 @@ void RDirNode::calcColour() {
         fcount++;
     }
 
-    this->col /= (float) fcount + 1.0;
+    this->col /= (float) fcount + 1.0f;
 }
 
 void RDirNode::calcArea() {
@@ -534,8 +534,8 @@ void RDirNode::applyForceDir(RDirNode* node) {
     float distance = posd - myradius - your_radius;
 
     //resolve overlap
-    if(posd < 0.00001) {
-        accel += vec2f( (rand() % 100) - 50, (rand() % 100) - 50).normal();
+    if(posd < 0.00001f) {
+        accel += vec2f( static_cast<float>((rand() % 100) - 50), static_cast<float>((rand() % 100) - 50)).normal();
         return;
     }
 
@@ -651,7 +651,7 @@ void RDirNode::applyForces(QuadTree& quadtree) {
 
 void RDirNode::debug(int indent) {
     std::string indentstr;
-    while(indentstr.size() < indent) indentstr += " ";
+    while(static_cast<int>(indentstr.size()) < indent) indentstr += " ";
 
     debugLog("%s%s\n", indentstr.c_str(), abspath.c_str());
 
@@ -684,7 +684,7 @@ int RDirNode::totalDirCount() {
 }
 
 int RDirNode::dirCount() {
-    return children.size();
+    return static_cast<int>(children.size());
 }
 
 std::list<RDirNode*>* RDirNode::getChildren() {
@@ -706,7 +706,7 @@ void RDirNode::updateSpline(float dt) {
         spos += delta.normal() * (delta.length() - td.length());
     }
 
-    spos += delta * std::min(1.0, dt * 2.0);
+    spos += delta * std::min(1.0f, dt * 2.0f);
 }
 
 void RDirNode::setInitialPosition() {
@@ -730,7 +730,7 @@ void RDirNode::move(float dt) {
 
     //the root node is the centre of the world
     if(parent == 0) {
-        pos = vec2f(0.0, 0.0);
+        pos = vec2f(0.0f, 0.0f);
         return;
     }
 
@@ -741,12 +741,12 @@ void RDirNode::move(float dt) {
 
     pos += accel * dt;
 
-    if(gGourceElasticity>0.0) {
+    if(gGourceElasticity>0.0f) {
         vec2f diff = (accel - prev_accel);
 
         float m = dt * gGourceElasticity;
 
-        vec2f accel3 = prev_accel * (1.0-m) + diff * m;
+        vec2f accel3 = prev_accel * (1.0f-m) + diff * m;
         pos += accel3;
         prev_accel = accel3;
     }
@@ -761,11 +761,11 @@ vec2f RDirNode::getNodeNormal() {
 
 vec2f RDirNode::calcFileDest(int max_files, int file_no) {
 
-    float arc   = 1.0/(float)max_files;
+    float arc   = 1.0f/(float)max_files;
 
-    float frac = arc * 0.5 + arc * file_no;
+    float frac = arc * 0.5f + arc * file_no;
 
-    vec2f dest = vec2f(sinf(frac*PI*2.0), cosf(frac*PI*2.0));
+    vec2f dest = vec2f(sinf(frac*PI*2.0f), cosf(frac*PI*2.0f));
 
     return dest;
 }
@@ -799,7 +799,7 @@ void RDirNode::updateFilePositions() {
 
         if(file_no>=max_files) {
             diameter++;
-            max_files = (int) std::max(1.0, diameter*PI);
+            max_files = (int) std::max(1.0f, diameter*PI);
 
             if(files_left<max_files) {
                 max_files = files_left;

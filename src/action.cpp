@@ -56,15 +56,15 @@ void RAction::draw(float dt) {
     vec2f offset     = (dest - src).normal().perpendicular() * target->getSize() * 0.5;
     vec2f offset_src = offset * 0.3f;
 
-    float max_alpha = 1.0;
-    float alpha = max_alpha * (1.0 - progress);
+    float max_alpha = 1.0f;
+    float alpha = max_alpha * (1.0f - progress);
 
-    float alpha2 = alpha * 0.1;
+    float alpha2 = alpha * 0.1f;
 
     vec4f col1 = vec4f(colour, alpha);
     vec4f col2 = vec4f(colour, alpha2);
 
-    glColor4f(1.0, 1.0, 1.0, 1.0);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
     glBegin(GL_QUADS);
         glColor4fv(col2);
@@ -94,12 +94,12 @@ void RemoveAction::logic(float dt) {
 
     RAction::logic(dt);
 
-    if(old_progress < 1.0 && progress >= 1.0) {
+    if(old_progress < 1.0f && progress >= 1.0f) {
         target->remove();
     }
 }
 
 ModifyAction::ModifyAction(RUser* source, RFile* target, float addedtime) : RAction(source, target, addedtime) {
-    colour = vec3f(1.0, 0.7, 0.3);
+    colour = vec3f(1.0f, 0.7f, 0.3f);
     action = "Modify";
 }

@@ -30,7 +30,7 @@
 int stringHash(std::string& str) {
 
     int val = 0;
-    int n = str.size();
+    int n = static_cast<int>(str.size());
 
     for (int i = 0; i < n; i++) {
         val = val + str[i] * (31^(n-i));
@@ -58,8 +58,8 @@ int stringHash(std::string& str) {
 vec2f vec2Hash(std::string& str) {
     int hash = stringHash(str);
 
-    int x = ((hash/7) % 255) - 127;
-    int y = ((hash/3) % 255) - 127;
+    float x = static_cast<float>(((hash/7) % 255) - 127);
+    float y = static_cast<float>(((hash/3) % 255) - 127);
 
     vec2f v = vec2f(x, y);
     v.normalize();
@@ -70,9 +70,9 @@ vec2f vec2Hash(std::string& str) {
 vec3f vec3Hash(std::string& str) {
     int hash = stringHash(str);
 
-    int x = ((hash/7) % 255) - 127;
-    int y = ((hash/3) % 255) - 127;
-    int z = hash % 255;
+    float x = static_cast<float>(((hash/7) % 255) - 127);
+    float y = static_cast<float>(((hash/3) % 255) - 127);
+    float z = static_cast<float>(hash % 255);
 
     vec3f v = vec3f(x, y, z);
     v.normalize();
@@ -83,11 +83,11 @@ vec3f vec3Hash(std::string& str) {
 vec3f colourHash(std::string& str) {
     int hash = stringHash(str);
 
-    int r = (hash/7) % 255;
+    float r = static_cast<float>((hash/7) % 255);
     if(r<0) r=0;
-    int g = (hash/3) % 255;
+    float g = static_cast<float>((hash/3) % 255);
     if(g<0) g=0;
-    int b = hash % 255;
+    float b = static_cast<float>(hash % 255);
 
     vec3f colour = vec3f(r, g, b);
     colour.normalize();
@@ -102,16 +102,16 @@ vec3f stylizedColourHash(std::string& str) {
 
     //how red
     float z = colour.z;
-    float t = 0.5;
+    float t = 0.5f;
 
     if(z <= t) {
         float zp = z/t;
 
-        colourc = vec3f(1.0, 1.0, 1.0) * zp + vec3f(0.6, 0.6, 0.6) * (1.0 - zp);
+        colourc = vec3f(1.0f, 1.0f, 1.0f) * zp + vec3f(0.6f, 0.6f, 0.6f) * (1.0f - zp);
     } else {
-        float zp = (z-t)/(1.0 - t);
-        colourc = vec3f(1.0, 0.0, 0.0) * zp + vec3f(1.0, 1.0, 1.0) * (1.0 - zp);
+        float zp = (z-t)/(1.0f - t);
+        colourc = vec3f(1.0f, 0.0f, 0.0f) * zp + vec3f(1.0f, 1.0f, 1.0f) * (1.0f - zp);
     }
 
-    return colour * 0.1 + colourc * 0.9;
+    return colour * 0.1f + colourc * 0.9f;
 }

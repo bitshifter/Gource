@@ -45,7 +45,7 @@ float ZoomCamera::getMinDistance() { return min_distance; }
 
 void ZoomCamera::setMaxDistance(float max) {
     max_distance = max;
-    zfar = max + 1.0;
+    zfar = max + 1.0f;
 }
 
 void ZoomCamera::setMinDistance(float min) {
@@ -55,7 +55,7 @@ void ZoomCamera::setMinDistance(float min) {
 void ZoomCamera::lockOn(bool lockon) {
 
     if(lockon) {
-         lockon_time = 1.0;
+         lockon_time = 1.0f;
     }
 
     this->lockon = lockon;
@@ -70,22 +70,22 @@ void ZoomCamera::adjust(Bounds2D& bounds) {
     //center camera on bounds
 
     //scale by 10% so we dont have stuff right on the edge of the screen
-    float width  = bounds.width() * 1.10;
-    float height = bounds.height() * 1.10;
+    float width  = bounds.width() * 1.10f;
+    float height = bounds.height() * 1.10f;
 
     vec2f centre  = bounds.centre();
 
     //adjust by screen ratio
     float dratio = display.height / (float) display.width;
 
-      if(dratio > 1.0) {
+      if(dratio > 1.0f) {
           height /= dratio;
       } else {
           width *= dratio;
       }
 
     //calc visible width of the opposite wall at a distance of 1 this fov
-    float toa = tan( getFov() * 0.5f * DEGREES_TO_RADIANS ) * 2.0;
+    float toa = tan( getFov() * 0.5f * DEGREES_TO_RADIANS ) * 2.0f;
 
     float distance;
 
@@ -123,9 +123,9 @@ void ZoomCamera::logic(float dt) {
     vec3f dpt = dp * dt * speed;
 
     if(lockon) {
-        dpt = dpt * lockon_time + dp * (1.0-lockon_time);
+        dpt = dpt * lockon_time + dp * (1.0f-lockon_time);
 
-        if(lockon_time>0.0) {
+        if(lockon_time>0.0f) {
             lockon_time = std::max(0.0f, lockon_time-dt*0.5f);
         }
     }
@@ -134,5 +134,5 @@ void ZoomCamera::logic(float dt) {
 
     pos += dpt;
 
-    target = vec3f(pos.x, pos.y, 0.0);
+    target = vec3f(pos.x, pos.y, 0.0f);
 }

@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
 
     display.displayArgs(argc, argv, &width, &height, &fullscreen, &arguments);
 
-    for(int i=0;i<arguments.size();i++) {
+    for(size_t i=0;i<arguments.size();i++) {
         std::string args = arguments[i];
 
         if(args == "-h" || args == "-?" || args == "--help") {
@@ -179,9 +179,9 @@ int main(int argc, char *argv[]) {
                 gource_help("specify elasticity (float)");
             }
 
-            gGourceElasticity = atof(arguments[++i].c_str());
+            gGourceElasticity = static_cast<float>(atof(arguments[++i].c_str()));
 
-            if(gGourceElasticity<=0.0) {
+            if(gGourceElasticity<=0.0f) {
                 gource_help("invalid elasticity value");
             }
 
@@ -198,7 +198,7 @@ int main(int argc, char *argv[]) {
             std::string colstring = arguments[++i];
 
             if(colstring.size()==6 && sscanf(colstring.c_str(), "%02x%02x%02x", &r, &g, &b) == 3) {
-                background = vec3f(r,g,b);
+                background = vec3f(static_cast<float>(r),static_cast<float>(g),static_cast<float>(b));
                 background /= 255.0f;
             } else {
                 gource_help("invalid colour string");
@@ -213,19 +213,19 @@ int main(int argc, char *argv[]) {
                 gource_help("specify seconds-per-day (seconds)");
             }
 
-            gGourceDaysPerSecond = atof(arguments[++i].c_str());
+            gGourceDaysPerSecond = static_cast<float>(atof(arguments[++i].c_str()));
 
-            if(gGourceDaysPerSecond<=0.0) {
+            if(gGourceDaysPerSecond<=0.0f) {
                 gource_help("invalid seconds-per-day value");
             }
 
-            gGourceDaysPerSecond = 1.0 / gGourceDaysPerSecond;
+            gGourceDaysPerSecond = 1.0f / gGourceDaysPerSecond;
 
             continue;
         }
 
         if(args == "--realtime") {
-            gGourceDaysPerSecond = 1.0 / 86400.0;
+            gGourceDaysPerSecond = 1.0f / 86400.0f;
 
             continue;
         }
@@ -266,9 +266,9 @@ int main(int argc, char *argv[]) {
                 gource_help("specify start-position (float)");
             }
 
-            start_position = atof(arguments[++i].c_str());
+            start_position = static_cast<float>(atof(arguments[++i].c_str()));
 
-            if(start_position<=0.0 || start_position>=1.0) {
+            if(start_position<=0.0f || start_position>=1.0f) {
                 gource_help("start-position outside of range 0.0 - 1.0 (non-inclusive)");
             }
 
@@ -296,9 +296,9 @@ int main(int argc, char *argv[]) {
                 gource_help("specify max-file-lag (seconds)");
             }
 
-            gGourceMaxFileLagSeconds = atof(arguments[++i].c_str());
+            gGourceMaxFileLagSeconds = static_cast<float>(atof(arguments[++i].c_str()));
 
-            if(gGourceMaxFileLagSeconds==0.0) {
+            if(gGourceMaxFileLagSeconds==0.0f) {
                 gource_help("invalid max-file-lag value");
             }
 
@@ -311,13 +311,13 @@ int main(int argc, char *argv[]) {
                 gource_help("specify user-friction (seconds)");
             }
 
-            gGourceUserFriction = atof(arguments[++i].c_str());
+            gGourceUserFriction = static_cast<float>(atof(arguments[++i].c_str()));
 
-            if(gGourceUserFriction<=0.0) {
+            if(gGourceUserFriction<=0.0f) {
                 gource_help("invalid user-friction value");
             }
 
-            gGourceUserFriction = 1.0 / gGourceUserFriction;
+            gGourceUserFriction = 1.0f / gGourceUserFriction;
 
             continue;
         }
@@ -328,9 +328,9 @@ int main(int argc, char *argv[]) {
                 gource_help("specify max-user-speed (units)");
             }
 
-            gGourceMaxUserSpeed = atof(arguments[++i].c_str());
+            gGourceMaxUserSpeed = static_cast<float>(atof(arguments[++i].c_str()));
 
-            if(gGourceMaxUserSpeed<=0) {
+            if(gGourceMaxUserSpeed<=0.0f) {
                 gource_help("invalid max-user-speed value");
             }
 

@@ -36,7 +36,7 @@ SplineEdge::SplineEdge(vec2f pos1, vec4f col1, vec2f pos2, vec4f col2, vec2f spo
     int max_detail = 10;
 
     int edge_detail = std::min(max_detail, (int) (ang * 100.0));
-    if(edge_detail<1.0) edge_detail = 1.0;
+    if(edge_detail<1) edge_detail = 1;
 
     spline_point.reserve(edge_detail+1);
     spline_colour.reserve(edge_detail+1);
@@ -79,14 +79,14 @@ void SplineEdge::drawBeam(vec2f pos1, vec4f col1, vec2f pos2, vec4f col2, float 
 
 void SplineEdge::drawShadow() {
 
-    int edges_count = spline_point.size() - 1;
+    int edges_count = static_cast<int>(spline_point.size()) - 1;
 
-    vec2f offset(2.0, 2.0);
+    vec2f offset(2.0f, 2.0f);
 
     glBegin(GL_QUADS);
 
     for(int i=0;i<edges_count;i++) {
-        drawBeam(spline_point[i] + offset, vec4f(0.0, 0.0, 0.0, gGourceShadowStrength), spline_point[i+1] + offset, vec4f(0.0, 0.0, 0.0, gGourceShadowStrength), 2.5);
+        drawBeam(spline_point[i] + offset, vec4f(0.0f, 0.0f, 0.0f, gGourceShadowStrength), spline_point[i+1] + offset, vec4f(0.0f, 0.0f, 0.0f, gGourceShadowStrength), 2.5);
     }
 
     glEnd();
@@ -94,12 +94,12 @@ void SplineEdge::drawShadow() {
 
 void SplineEdge::draw() {
 
-    int edges_count = spline_point.size() - 1;
+    int edges_count = static_cast<int>(spline_point.size()) - 1;
 
     glBegin(GL_QUADS);
 
     for(int i=0;i<edges_count;i++) {
-        drawBeam(spline_point[i], spline_colour[i], spline_point[i+1], spline_colour[i+1], 2.5);
+        drawBeam(spline_point[i], spline_colour[i], spline_point[i+1], spline_colour[i+1], 2.5f);
     }
 
     glEnd();
