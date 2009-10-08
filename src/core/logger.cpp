@@ -71,13 +71,13 @@ void debugLog(const char *str, ...) {
 #endif
 
 #ifdef _MSC_VER
-	static const size_t BUFFER_SIZE = 128;
-	va_list ap;	
-	char msg_buffer[BUFFER_SIZE];	
-	va_start(ap, str);
-	vsnprintf( msg_buffer, BUFFER_SIZE - 1, str, ap);
-	va_end(ap);
-	msg_buffer[BUFFER_SIZE-1] = 0;
-	OutputDebugStringA(msg_buffer);
+    static const size_t BUFFER_SIZE = 128;
+    va_list ap;	
+    char msg_buffer[BUFFER_SIZE];	
+    va_start(ap, str);
+    vsnprintf( msg_buffer, BUFFER_SIZE - 1, str, ap);
+    va_end(ap);
+    msg_buffer[BUFFER_SIZE-1] = 0;
+    OutputDebugStringA(msg_buffer);
 #endif
 }
