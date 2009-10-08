@@ -8,6 +8,7 @@ Makefile
 logs/*
 /config.log
 /config.status
+*~
 *.swp
 *.d
 *.ncb
