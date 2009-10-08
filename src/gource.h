@@ -73,6 +73,7 @@ class Gource : public SDLApp {
     vec2f mousepos;
 
     float start_position;
+	float time_scale;
 
     int tag_seq, commit_seq;
 

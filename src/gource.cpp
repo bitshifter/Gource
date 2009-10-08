@@ -349,15 +349,18 @@ void Gource::init() {
 
 void Gource::update(float t, float dt) {
 
+	float scaled_dt = dt * time_scale;
+	float scaled_t = t - dt + scaled_dt;
+
     logic_time = SDL_GetTicks();
 
-    logic(t, dt);
+    logic(scaled_t, scaled_dt);
 
     logic_time = SDL_GetTicks() - logic_time;
 
     draw_time = SDL_GetTicks();
 
-    draw(t, dt);
+    draw(scaled_t, scaled_dt);
 }
 
 //peek at the date under the mouse pointer on the slider
@@ -657,6 +660,25 @@ void Gource::keyPress(SDL_KeyboardEvent *e) {
             gGourceForceGravity *= 1.1f;
         }
 
+		if(e->keysym.sym == SDLK_PERIOD)
+		{
+			time_scale += 0.5f;
+			time_scale = std::min<float>(5.0f, time_scale); // above this value this start to break
+			debugLog("time_scale=%f", time_scale);
+		}
+
+		if(e->keysym.sym == SDLK_COMMA)
+		{
+			time_scale -= 0.5f;
+			time_scale = std::max<float>(0.0f, time_scale); // don't go negative
+			debugLog("time_scale=%f", time_scale);
+		}
+
+		if(e->keysym.sym == SDLK_SLASH)
+		{
+			time_scale = 1.0f;
+			debugLog("time_scale=%f", time_scale);
+		}
     }
 }
 
@@ -782,6 +804,7 @@ void Gource::reset() {
 
     files.clear();
 
+	time_scale = 1.0f;
     idle_time=0;
     currtime=0;
     subseconds=0.0;
@@ -1188,7 +1211,7 @@ void Gource::updateTime() {
 }
 
 void Gource::logic(float t, float dt) {
-    dt = std::min<float>(dt, gGourceMaxDelta);
+    dt = std::min<float>(dt, gGourceMaxDelta * time_scale);
 
     if(draw_loading) return;
 
@@ -1423,7 +1446,7 @@ void Gource::loadingScreen() {
 }
 
 void Gource::draw(float t, float dt) {
-    dt = std::min<float>(dt, gGourceMaxDelta);
+    dt = std::min<float>(dt, gGourceMaxDelta * time_scale);
 
     display.setClearColour(background_colour);
     display.clear();
