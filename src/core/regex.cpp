@@ -53,11 +53,11 @@ Regex::~Regex() {
     if(re != 0) pcre_free(re);
 }
 
-bool Regex::isValid() {
+bool Regex::isValid() const {
     return valid;
 }
 
-bool Regex::match(std::string& str, std::vector<std::string>* results) {
+bool Regex::match(const std::string& str, std::vector<std::string>* results) const {
 
     int ovector[REGEX_MAX_MATCHES];
 

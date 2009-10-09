@@ -660,25 +660,25 @@ void Gource::keyPress(SDL_KeyboardEvent *e) {
             gGourceForceGravity *= 1.1f;
         }
 
-		if(e->keysym.sym == SDLK_PERIOD)
-		{
-			time_scale += 0.5f;
-			time_scale = std::min<float>(5.0f, time_scale); // above this value this start to break
-			debugLog("time_scale=%f", time_scale);
-		}
+	    if(e->keysym.sym == SDLK_PERIOD)
+        {
+            time_scale += 0.5f;
+            time_scale = std::min<float>(5.0f, time_scale); // above this value this start to break
+            debugLog("time_scale=%f", time_scale);
+        }
 
-		if(e->keysym.sym == SDLK_COMMA)
-		{
-			time_scale -= 0.5f;
-			time_scale = std::max<float>(0.0f, time_scale); // don't go negative
-			debugLog("time_scale=%f", time_scale);
-		}
+        if(e->keysym.sym == SDLK_COMMA)
+        {
+            time_scale -= 0.5f;
+            time_scale = std::max<float>(0.0f, time_scale); // don't go negative
+            debugLog("time_scale=%f", time_scale);
+        }
 
-		if(e->keysym.sym == SDLK_SLASH)
-		{
-			time_scale = 1.0f;
-			debugLog("time_scale=%f", time_scale);
-		}
+        if(e->keysym.sym == SDLK_SLASH)
+        {
+            time_scale = 1.0f;
+            debugLog("time_scale=%f", time_scale);
+        }
     }
 }
 
@@ -686,57 +686,57 @@ void Gource::findUserImages() {
     if(!gGourceUserImageDir.size()) return;
 
 #ifdef _WIN32
-	HANDLE          hList;
-	char            szDir[MAX_PATH+1];
-	WIN32_FIND_DATAA FileData;
+    HANDLE          hList;
+    char            szDir[MAX_PATH+1];
+    WIN32_FIND_DATAA FileData;
 
-	// Get the proper directory path
-	sprintf(szDir, "%s\\*", gGourceUserImageDir.c_str());
+    // Get the proper directory path
+    sprintf(szDir, "%s\\*", gGourceUserImageDir.c_str());
 
-	// Get the first file
-	hList = FindFirstFileA(szDir, &FileData);
-	if (hList == INVALID_HANDLE_VALUE)
-	{ 
-		debugLog("No files found\n\n");
-		return;
-	}
-	else
-	{
-		// Traverse through the directory structure
-		for (;;)
-		{
-			// Check the object is a directory or not
-			if ((FileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
-			{
-				std::string dirfile(FileData.cFileName);
+    // Get the first file
+    hList = FindFirstFileA(szDir, &FileData);
+    if (hList == INVALID_HANDLE_VALUE)
+    { 
+        debugLog("No files found\n\n");
+        return;
+    }
+    else
+    {
+        // Traverse through the directory structure
+        for (;;)
+        {
+            // Check the object is a directory or not
+            if ((FileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
+            {
+                std::string dirfile(FileData.cFileName);
 
-				size_t extpos = 0;
+                size_t extpos = 0;
 
-				if ((extpos=dirfile.rfind(".jpg"))  != std::string::npos ||
-					(extpos=dirfile.rfind(".jpeg")) != std::string::npos ||
-					(extpos=dirfile.rfind(".png"))  != std::string::npos)
-				{
-					std::string image_path = gGourceUserImageDir + dirfile;
-					std::string name       = dirfile.substr(0,extpos);
+                if ((extpos=dirfile.rfind(".jpg"))  != std::string::npos ||
+                    (extpos=dirfile.rfind(".jpeg")) != std::string::npos ||
+                    (extpos=dirfile.rfind(".png"))  != std::string::npos)
+                {
+                    std::string image_path = gGourceUserImageDir + dirfile;
+                    std::string name       = dirfile.substr(0,extpos);
 
-					debugLog("%s => %s\n", name.c_str(), image_path.c_str());
+                    debugLog("%s => %s\n", name.c_str(), image_path.c_str());
 
-					gGourceUserImageMap[name] = image_path;
-				}
-			}
+                    gGourceUserImageMap[name] = image_path;
+                }
+            }
 
-			// get the next file
-			if (!FindNextFileA(hList, &FileData))
-			{
-				if (GetLastError() == ERROR_NO_MORE_FILES)
-				{
-					break;
-				}
-			}
-		}
-	}
+            // get the next file
+            if (!FindNextFileA(hList, &FileData))
+            {
+                if (GetLastError() == ERROR_NO_MORE_FILES)
+                {
+                    break;
+                }
+            }
+        }
+    }
 
-	FindClose(hList);
+    FindClose(hList);
 #else
     //get jpg and png images in dir
     DIR *dp;
@@ -804,7 +804,7 @@ void Gource::reset() {
 
     files.clear();
 
-	time_scale = 1.0f;
+    time_scale = 1.0f;
     idle_time=0;
     currtime=0;
     subseconds=0.0;
@@ -920,7 +920,7 @@ void Gource::readLog() {
     //debugLog("current date: %s\n", displaydate.c_str());
 }
 
-void Gource::processCommit(RCommit& commit, float t) {
+void Gource::processCommit(const RCommit& commit, float t) {
 
     //find user of this commit or create them
     RUser* user = 0;
@@ -931,9 +931,9 @@ void Gource::processCommit(RCommit& commit, float t) {
     if(seen_user != users.end()) user = seen_user->second;
 
     //find files of this commit or create it
-    for(std::list<RCommitFile>::iterator it = commit.files.begin(); it != commit.files.end(); it++) {
+    for(std::list<RCommitFile>::const_iterator it = commit.files.begin(); it != commit.files.end(); it++) {
 
-        RCommitFile& cf = *it;
+        const RCommitFile& cf = *it;
 
         bool filtered_filename = false;
 
@@ -1259,18 +1259,22 @@ void Gource::logic(float t, float dt) {
         subseconds = 0.0;
     }
 
-    //set current time
-    float time_inc = (dt * 86400.0f * gGourceDaysPerSecond);
-    int seconds    = (int) time_inc;
+    // stop updating timer once the end of the queue is reached
+    if(commitqueue.size())
+    {
+        //set current time
+        float time_inc = (dt * 86400.0f * gGourceDaysPerSecond);
+        int seconds    = (int) time_inc;
 
-    subseconds += time_inc - ((float) seconds);
+        subseconds += time_inc - ((float) seconds);
 
-    if(subseconds >= 1.0) {
-        currtime   += (int) subseconds;
-        subseconds -= (int) subseconds;
+        if(subseconds >= 1.0) {
+            currtime   += (int) subseconds;
+            subseconds -= (int) subseconds;
+        }
+
+        currtime   += seconds;
     }
-
-    currtime   += seconds;
 
     // delete files
     for(std::vector<RFile*>::iterator it = gGourceRemovedFiles.begin(); it != gGourceRemovedFiles.end(); it++) {
@@ -1283,7 +1287,7 @@ void Gource::logic(float t, float dt) {
     //add commits up until the current time
     while(commitqueue.size() > 0) {
 
-        RCommit commit = commitqueue[0];
+        const RCommit& commit = commitqueue[0];
 
         if(gGourceAutoSkipSeconds>=0.0 && idle_time >= gGourceAutoSkipSeconds) {
             currtime = commit.timestamp;

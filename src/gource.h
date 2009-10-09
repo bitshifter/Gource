@@ -137,7 +137,7 @@ class Gource : public SDLApp {
     void selectNextUser();
 
     void readLog();
-    void processCommit(RCommit& commit, float t);
+    void processCommit(const RCommit& commit, float t);
 
     std::string dateAtPosition(float percent);
 
